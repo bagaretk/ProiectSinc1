@@ -15,9 +15,10 @@ namespace ProiectLOL
 {
     public partial class Proiect : Form
     {
+        int i = 0;
         Series series;
         int[] pointsArray = {1,2 };
-        SerialPort _serialPort = new SerialPort("COM11", 9600, Parity.None, 8, StopBits.One);
+        SerialPort _serialPort = new SerialPort("COM11", 19200, Parity.None, 8, StopBits.One);
         public Proiect()
         {
             InitializeComponent();
@@ -43,10 +44,11 @@ namespace ProiectLOL
             _serialPort.Handshake = Handshake.None;
             _serialPort.DataReceived += new SerialDataReceivedEventHandler(sp_DataReceived);
             _serialPort.Open();
-            this.chart1.Titles.Add("Pets");
+            this.chart1.Titles.Add("Evolutia temperaturii");
             this.chart1.Series.Clear();
             series = this.chart1.Series.Add("Temperatura");
-
+            this.chart1.Series["Temperatura"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            chart1.ChartAreas[0].AxisX.Interval = 1;
         }
 
         private void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -73,7 +75,9 @@ namespace ProiectLOL
             {
                 if (!(_serialPort.IsOpen))
                     _serialPort.Open();
-                _serialPort.Write( Int32.Parse(textBox2.Text) + "\r\n");
+                _serialPort.Write((trackBar1.Value).ToString() + "," + (trackBar2.Value).ToString() + "," + (trackBar3.Value).ToString()+ "," + (trackBar4.Value).ToString());
+
+
             }
             catch (Exception ex)
             {
@@ -88,13 +92,44 @@ namespace ProiectLOL
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
+            i++;
             if(textBox1.Text != "")
-                series.Points.Add(double.Parse(textBox1.Text)); 
+                series.Points.AddXY(i,float.Parse(textBox1.Text)); 
         }
 
         private void chart1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            labelTemperaturaCritica.Text = trackBar1.Value.ToString();
+        }
+
+        private void trackBar2_Scroll(object sender, EventArgs e)
+        {
+            labelTimpIncalzire.Text = trackBar2.Value.ToString();
+        }
+
+        private void trackBar3_Scroll(object sender, EventArgs e)
+        {
+            labelTimpMentinere.Text = trackBar3.Value.ToString();
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void trackBar4_Scroll(object sender, EventArgs e)
+        {
+            labelTimpRacire.Text = trackBar4.Value.ToString();
         }
     }
 }
